@@ -1,16 +1,17 @@
 {
-  "name": "SOSXR.MQTT.Samples",
-  "rootNamespace": "",
-  "references": [
-    "GUID:6c9e63d5f107e4177b422338106591d3"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "SOSXR.MQTT.Samples",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6c9e63d5f107e4177b422338106591d3",
+        "GUID:eb1034696cce04f25a4a7d38d2e0e5a4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

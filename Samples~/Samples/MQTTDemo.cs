@@ -24,9 +24,9 @@ SOFTWARE.
 
 using System.Collections.Generic;
 using System.Text;
+using SOSXR.EnhancedLogger;
 using UnityEngine;
 using UnityEngine.UI;
-using uPLibrary.Networking.M2Mqtt.Messages;
 
 
 /// <summary>
@@ -37,8 +37,11 @@ namespace M2MqttUnity.Examples
     /// <summary>
     ///     Script for testing M2MQTT with a Unity UI
     /// </summary>
-    public class M2MqttUnityTest : M2MqttUnityClient
+    public class MQTTDemo : MQTTUnityClient
     {
+        [SerializeField] private string m_topicOne = "sosxr/test/topic/one";
+        [SerializeField] private int m_payload = 42;
+
         [Header("User Interface")]
         [SerializeField] private InputField consoleInputField;
         [SerializeField] private Toggle encryptedToggle;
@@ -53,13 +56,31 @@ namespace M2MqttUnity.Examples
         private bool updateUI = false;
 
 
+        private void OnEnable()
+        {
+            SetUiMessage("Ready.");
+            updateUI = true;
+        }
+
+
+        private void TopicOneCallback(string topic)
+        {
+            this.Success("Received from: " + topic);
+        }
+
+
+        [ContextMenu(nameof(PublishTopicOne))]
+        private void PublishTopicOne()
+        {
+            Publish(m_topicOne, m_payload.ToString());
+        }
 
 
         public void SetBrokerAddress(string brokerAddress)
         {
             if (addressInputField && !updateUI)
             {
-                m_brokerAddress = brokerAddress;
+                BrokerAddress = brokerAddress;
             }
         }
 
@@ -68,14 +89,14 @@ namespace M2MqttUnity.Examples
         {
             if (portInputField && !updateUI)
             {
-                int.TryParse(brokerPort, out m_brokerPort);
+                int.TryParse(brokerPort, out BrokerPort);
             }
         }
 
 
         public void SetEncrypted(bool isEncrypted)
         {
-            m_isEncrypted = isEncrypted;
+            IsEncrypted = isEncrypted;
         }
 
 
@@ -102,26 +123,16 @@ namespace M2MqttUnity.Examples
         protected override void OnConnecting()
         {
             base.OnConnecting();
-            SetUiMessage("Connecting to broker on " + m_brokerAddress + ":" + m_brokerPort + "...\n");
+            SetUiMessage("Connecting to broker on " + BrokerAddress + ":" + BrokerPort + "...\n");
         }
 
 
         protected override void OnConnected()
         {
             base.OnConnected();
-            SetUiMessage("Connected to broker on " + m_brokerAddress + "\n");
-        }
+            SetUiMessage("Connected to broker on " + BrokerAddress + "\n");
 
-
-        protected override void SubscribeTopics()
-        {
-            base.SubscribeTopics();
-        }
-
-
-        protected override void UnsubscribeTopics()
-        {
-            base.UnsubscribeTopics();
+            SubscribeToTopic(m_topicOne, TopicOneCallback);
         }
 
 
@@ -150,44 +161,52 @@ namespace M2MqttUnity.Examples
                 if (connectButton != null)
                 {
                     connectButton.interactable = true;
-                    disconnectButton.interactable = false;
-                    testPublishButton.interactable = false;
-                }
-            }
-            else
-            {
-                if (testPublishButton != null)
-                {
-                    testPublishButton.interactable = client.IsConnected;
                 }
 
                 if (disconnectButton != null)
                 {
-                    disconnectButton.interactable = client.IsConnected;
+                    disconnectButton.interactable = false;
                 }
 
-                if (connectButton != null)
+                if (testPublishButton != null)
                 {
-                    connectButton.interactable = !client.IsConnected;
+                    testPublishButton.interactable = false;
                 }
+
+                return;
+            }
+
+            if (testPublishButton != null)
+            {
+                testPublishButton.interactable = client.IsConnected;
+            }
+
+            if (disconnectButton != null)
+            {
+                disconnectButton.interactable = client.IsConnected;
+            }
+
+            if (connectButton != null)
+            {
+                connectButton.interactable = !client.IsConnected;
             }
 
             if (addressInputField != null && connectButton != null)
             {
                 addressInputField.interactable = connectButton.interactable;
-                addressInputField.text = m_brokerAddress;
+                addressInputField.text = BrokerAddress;
             }
 
             if (portInputField != null && connectButton != null)
             {
                 portInputField.interactable = connectButton.interactable;
-                portInputField.text = m_brokerPort.ToString();
+                portInputField.text = BrokerPort.ToString();
             }
 
             if (encryptedToggle != null && connectButton != null)
             {
                 encryptedToggle.interactable = connectButton.interactable;
-                encryptedToggle.isOn = m_isEncrypted;
+                encryptedToggle.isOn = IsEncrypted;
             }
 
             if (clearButton != null && connectButton != null)
@@ -199,18 +218,11 @@ namespace M2MqttUnity.Examples
         }
 
 
-        protected override void Start()
-        {
-            SetUiMessage("Ready.");
-            updateUI = true;
-            base.Start();
-        }
-
-
         protected override void DecodeMessage(string topic, byte[] message)
         {
             var msg = Encoding.UTF8.GetString(message);
             Debug.Log("Received: " + msg);
+            this.Success($"Received {msg}");
             StoreMessage(msg);
         }
 
@@ -227,10 +239,8 @@ namespace M2MqttUnity.Examples
         }
 
 
-        protected override void Update()
+        private void LateUpdate() // Update was already taken
         {
-            base.Update(); // call ProcessMqttEvents()
-
             if (eventMessages.Count > 0)
             {
                 foreach (var msg in eventMessages)

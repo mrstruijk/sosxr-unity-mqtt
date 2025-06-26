@@ -1685,12 +1685,9 @@ MonoBehaviour:
       m_Calls: []
   m_OnDidEndEdit:
     m_PersistentCalls:
-      m_Calls: []
-  m_OnValueChanged:
-    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1699045182}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: M2MqttUnity.Examples.MQTTDemo, SOSXR.MQTT.Samples
         m_MethodName: SetBrokerAddress
         m_Mode: 0
         m_Arguments:
@@ -1701,6 +1698,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
@@ -2314,7 +2314,7 @@ GameObject:
   - component: {fileID: 1699045183}
   - component: {fileID: 1699045182}
   m_Layer: 0
-  m_Name: M2MQTT
+  m_Name: MQTT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2332,17 +2332,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbaa80705124f9e439d56ca6d5e6db69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_brokerAddress: localhost
-  m_brokerPort: 1883
-  m_isEncrypted: 0
+  BrokerAddress: 145.118.221.55
+  BrokerPort: 1883
+  IsEncrypted: 0
   m_connectionDelay: 500
   m_timeoutOnConnection: 30000
-  m_autoConnect: 0
+  AutoConnect: 0
   m_mqttUserName: 
   m_mqttPassword: 
+  m_testInterval: -1
   m_testTopic: testes
   m_testMessage: Hello world!
-  m_autoTest: 0
+  m_topicOne: sosxr/test/topic/one
+  m_payload: 42
   consoleInputField: {fileID: 221991987}
   encryptedToggle: {fileID: 1740149083}
   addressInputField: {fileID: 1275266004}
