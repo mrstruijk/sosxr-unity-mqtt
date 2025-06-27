@@ -393,7 +393,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.1000366, y: 97.79999}
+  m_AnchoredPosition: {x: -1.1000977, y: 97.79999}
   m_SizeDelta: {x: -12.8, y: -211.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &221991987
@@ -887,10 +887,13 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnSubmit:
     m_PersistentCalls:
+      m_Calls: []
+  m_OnDidEndEdit:
+    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1699045182}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: SetBrokerPort
+        m_TargetAssemblyTypeName: M2MqttUnity.MQTTClient, SOSXR.MQTT
+        m_MethodName: set_BrokerPortString
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -900,9 +903,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_OnDidEndEdit:
-    m_PersistentCalls:
-      m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1687,8 +1687,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1699045182}
-        m_TargetAssemblyTypeName: M2MqttUnity.Examples.MQTTDemo, SOSXR.MQTT.Samples
-        m_MethodName: SetBrokerAddress
+        m_TargetAssemblyTypeName: M2MqttUnity.MQTTClient, SOSXR.MQTT
+        m_MethodName: set_BrokerAddress
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2065,8 +2065,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1699045182}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: SetUiMessage
+        m_TargetAssemblyTypeName: M2MqttUnity.Examples.MQTTUI, SOSXR.MQTT.Samples
+        m_MethodName: SetUIMessage
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2332,19 +2332,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbaa80705124f9e439d56ca6d5e6db69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BrokerAddress: 145.118.221.55
-  BrokerPort: 1883
-  IsEncrypted: 0
+  m_brokerAddress: localhost
+  m_brokerPort: 1883
+  m_isEncrypted: 0
   m_connectionDelay: 500
   m_timeoutOnConnection: 30000
-  AutoConnect: 0
+  m_autoConnect: 1
   m_mqttUserName: 
   m_mqttPassword: 
-  m_testInterval: -1
-  m_testTopic: testes
+  m_testTopic: SOSXR/Test
   m_testMessage: Hello world!
-  m_topicOne: sosxr/test/topic/one
-  m_payload: 42
   consoleInputField: {fileID: 221991987}
   encryptedToggle: {fileID: 1740149083}
   addressInputField: {fileID: 1275266004}
@@ -2364,7 +2361,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 2.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2454,8 +2451,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1699045182}
-        m_TargetAssemblyTypeName: M2MqttUnity.Examples.M2MqttUnityTest, SOSXR.MQTT.Samples
-        m_MethodName: SetEncrypted
+        m_TargetAssemblyTypeName: M2MqttUnity.MQTTClient, SOSXR.MQTT
+        m_MethodName: set_IsEncrypted
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

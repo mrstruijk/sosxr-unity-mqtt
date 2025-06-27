@@ -45,10 +45,7 @@ namespace uPLibrary.Networking.M2Mqtt.Utility
         [Conditional("DEBUG")]
         public static void Debug(string format, params object[] args)
         {
-            if (TraceListener != null)
-            {
-                TraceListener(format, args);
-            }
+            TraceListener?.Invoke(format, args);
         }
 
         public static void WriteLine(TraceLevel level, string format)

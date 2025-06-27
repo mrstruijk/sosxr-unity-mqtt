@@ -60,7 +60,7 @@ namespace uPLibrary.Networking.M2Mqtt
     /// <summary>
     ///     MQTT Client
     /// </summary>
-    public class MqttClient
+    public class MQQTBackend
     {
         #if BROKER
         #region Constants ...
@@ -261,7 +261,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         /// <param name="brokerIpAddress">Broker IP address</param>
         [Obsolete("Use this ctor MqttClient(string brokerHostName) insted")]
-        public MqttClient(IPAddress brokerIpAddress) :
+        public MQQTBackend(IPAddress brokerIpAddress) :
             this(brokerIpAddress, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, null, MqttSslProtocols.None)
         {
         }
@@ -277,7 +277,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) insted")]
-        public MqttClient(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
+        public MQQTBackend(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
         {
             #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
             Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, clientCert, sslProtocol, null, null);
@@ -292,7 +292,7 @@ namespace uPLibrary.Networking.M2Mqtt
         ///     Constructor
         /// </summary>
         /// <param name="brokerHostName">Broker Host Name or IP Address</param>
-        public MqttClient(string brokerHostName) :
+        public MQQTBackend(string brokerHostName) :
             #if !(WINDOWS_APP || WINDOWS_PHONE_APP || (!UNITY_EDITOR&&UNITY_WSA_10_0&&!ENABLE_IL2CPP))
             this(brokerHostName, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, null, MqttSslProtocols.None)
         #else
@@ -312,7 +312,7 @@ namespace uPLibrary.Networking.M2Mqtt
         #if !(WINDOWS_APP || WINDOWS_PHONE_APP || ((!UNITY_EDITOR && UNITY_WSA_10_0 && !ENABLE_IL2CPP)))
         /// <param name="caCert">CA certificate for secure connection</param>
         /// <param name="clientCert">Client certificate</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
+        public MQQTBackend(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
             #else
         public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)
             #endif
@@ -340,7 +340,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
+        public MQQTBackend(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
                           RemoteCertificateValidationCallback userCertificateValidationCallback)
             : this(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, null)
         {
@@ -356,7 +356,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateSelectionCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol,
+        public MQQTBackend(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol,
                           RemoteCertificateValidationCallback userCertificateValidationCallback,
                           LocalCertificateSelectionCallback userCertificateSelectionCallback)
             : this(brokerHostName, brokerPort, secure, null, null, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback)
@@ -375,7 +375,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateSelectionCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
+        public MQQTBackend(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
                           RemoteCertificateValidationCallback userCertificateValidationCallback,
                           LocalCertificateSelectionCallback userCertificateSelectionCallback)
         {
@@ -634,6 +634,11 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         public void Disconnect()
         {
+            if (!IsConnected)
+            {
+                return;
+            }
+
             var disconnect = new MqttMsgDisconnect();
             Send(disconnect);
 
@@ -928,11 +933,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="publish">PUBLISH message received</param>
         private void OnMqttMsgPublishReceived(MqttMsgPublish publish)
         {
-            if (MqttMsgPublishReceived != null)
-            {
-                MqttMsgPublishReceived(this,
-                    new MqttMsgPublishEventArgs(publish.Topic, publish.Message, publish.DupFlag, publish.QosLevel, publish.Retain));
-            }
+            MqttMsgPublishReceived?.Invoke(this, new MqttMsgPublishEventArgs(publish.Topic, publish.Message, publish.DupFlag, publish.QosLevel, publish.Retain));
         }
 
 
@@ -943,11 +944,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="isPublished">Publish flag</param>
         private void OnMqttMsgPublished(ushort messageId, bool isPublished)
         {
-            if (MqttMsgPublished != null)
-            {
-                MqttMsgPublished(this,
-                    new MqttMsgPublishedEventArgs(messageId, isPublished));
-            }
+            MqttMsgPublished?.Invoke(this, new MqttMsgPublishedEventArgs(messageId, isPublished));
         }
 
 
@@ -957,11 +954,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="suback">SUBACK message received</param>
         private void OnMqttMsgSubscribed(MqttMsgSuback suback)
         {
-            if (MqttMsgSubscribed != null)
-            {
-                MqttMsgSubscribed(this,
-                    new MqttMsgSubscribedEventArgs(suback.MessageId, suback.GrantedQoSLevels));
-            }
+            MqttMsgSubscribed?.Invoke(this, new MqttMsgSubscribedEventArgs(suback.MessageId, suback.GrantedQoSLevels));
         }
 
 
@@ -971,11 +964,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="messageId">Message identifier for unsubscribed topic</param>
         private void OnMqttMsgUnsubscribed(ushort messageId)
         {
-            if (MqttMsgUnsubscribed != null)
-            {
-                MqttMsgUnsubscribed(this,
-                    new MqttMsgUnsubscribedEventArgs(messageId));
-            }
+            MqttMsgUnsubscribed?.Invoke(this, new MqttMsgUnsubscribedEventArgs(messageId));
         }
 
 
@@ -1039,10 +1028,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         private void OnConnectionClosed()
         {
-            if (ConnectionClosed != null)
-            {
-                ConnectionClosed(this, EventArgs.Empty);
-            }
+            ConnectionClosed?.Invoke(this, EventArgs.Empty);
         }
 
 
