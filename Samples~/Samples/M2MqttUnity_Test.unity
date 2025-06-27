@@ -2340,7 +2340,7 @@ MonoBehaviour:
   m_autoConnect: 1
   m_mqttUserName: 
   m_mqttPassword: 
-  m_testTopic: SOSXR/Test
+  m_testTopic: testes
   m_testMessage: Hello world!
   consoleInputField: {fileID: 221991987}
   encryptedToggle: {fileID: 1740149083}
